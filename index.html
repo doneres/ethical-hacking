@@ -1,784 +1,674 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ctrl+Play — Ethical Hacking</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@700;800&family=Inter:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      *,
-      *::before,
-      *::after {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ctrl+Play — Ethical Hacking</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-      :root {
-        --orange: #f26522;
-        --teal: #1a7a9a;
-        --orange-dim: rgba(242, 101, 34, 0.12);
-        --orange-glow: rgba(242, 101, 34, 0.35);
-        --teal-dim: rgba(26, 122, 154, 0.15);
-        --bg: #080a0e;
-        --surface: #0f1218;
-        --border: rgba(242, 101, 34, 0.18);
-        --text: #e8e8e8;
-        --muted: #50596a;
-        --mono: "JetBrains Mono", monospace;
-        --display: "Syne", sans-serif;
-        --body: "Inter", sans-serif;
-      }
+    :root {
+      --orange: #F26522;
+      --teal:   #1A7A9A;
+      --orange-dim:  rgba(242,101,34,0.12);
+      --orange-glow: rgba(242,101,34,0.35);
+      --teal-dim:    rgba(26,122,154,0.15);
+      --bg:      #080A0E;
+      --surface: #0F1218;
+      --border:  rgba(242,101,34,0.18);
+      --text:    #E8E8E8;
+      --muted:   #50596A;
+      --mono:    'JetBrains Mono', monospace;
+      --display: 'Syne', sans-serif;
+      --body:    'Inter', sans-serif;
+    }
 
-      html,
-      body {
-        width: 100%;
-        height: 100%;
-        background: var(--bg);
-        color: var(--text);
-        font-family: var(--body);
-        overflow: hidden;
-        user-select: none;
-      }
+    html, body {
+      width: 100%; height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--body);
+      overflow: hidden;
+      user-select: none;
+    }
 
-      #bg-canvas {
-        position: fixed;
-        inset: 0;
-        z-index: 0;
-      }
+    #bg-canvas { position: fixed; inset: 0; z-index: 0; }
 
-      .scanline {
-        position: fixed;
-        inset: 0;
-        z-index: 1;
-        pointer-events: none;
-        background: repeating-linear-gradient(
-          to bottom,
-          transparent 0px,
-          transparent 3px,
-          rgba(0, 0, 0, 0.07) 3px,
-          rgba(0, 0, 0, 0.07) 4px
-        );
-      }
-      .vignette {
-        position: fixed;
-        inset: 0;
-        z-index: 2;
-        pointer-events: none;
-        background: radial-gradient(
-          ellipse at center,
-          transparent 30%,
-          rgba(0, 0, 0, 0.75) 100%
-        );
-      }
+    .scanline {
+      position: fixed; inset: 0; z-index: 1; pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom, transparent 0px, transparent 3px,
+        rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px
+      );
+    }
+    .vignette {
+      position: fixed; inset: 0; z-index: 2; pointer-events: none;
+      background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.75) 100%);
+    }
 
-      /* cantos */
-      .corner {
-        position: fixed;
-        width: 36px;
-        height: 36px;
-        z-index: 5;
-        pointer-events: none;
-      }
-      .corner--tl {
-        top: 18px;
-        left: 18px;
-        border-top: 2px solid var(--orange);
-        border-left: 2px solid var(--orange);
-      }
-      .corner--tr {
-        top: 18px;
-        right: 18px;
-        border-top: 2px solid var(--orange);
-        border-right: 2px solid var(--orange);
-      }
-      .corner--bl {
-        bottom: 18px;
-        left: 18px;
-        border-bottom: 2px solid var(--orange);
-        border-left: 2px solid var(--orange);
-      }
-      .corner--br {
-        bottom: 18px;
-        right: 18px;
-        border-bottom: 2px solid var(--orange);
-        border-right: 2px solid var(--orange);
-      }
+    .corner { position: fixed; width: 36px; height: 36px; z-index: 5; pointer-events: none; }
+    .corner--tl { top:18px; left:18px;  border-top:2px solid var(--orange); border-left:2px solid var(--orange); }
+    .corner--tr { top:18px; right:18px; border-top:2px solid var(--orange); border-right:2px solid var(--orange); }
+    .corner--bl { bottom:18px; left:18px;  border-bottom:2px solid var(--orange); border-left:2px solid var(--orange); }
+    .corner--br { bottom:18px; right:18px; border-bottom:2px solid var(--orange); border-right:2px solid var(--orange); }
 
-      /* ── TELA ── */
-      .screen {
-        position: relative;
-        z-index: 10;
-        width: 100vw;
-        height: 100vh;
-        display: grid;
-        grid-template-rows: auto 1fr auto;
-        padding: 32px 48px;
-        gap: 0;
-      }
+    /* ── TELA ── */
+    .screen {
+      position: relative; z-index: 10;
+      width: 100vw; height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto auto;
+      padding: 24px 48px 20px;
+    }
 
-      /* ── TOPBAR ── */
-      .topbar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-      .ctrlplay-logo-wrap {
-        background: #fff;
-        border-radius: 10px;
-        padding: 6px 14px;
-        display: flex;
-        align-items: center;
-        height: 50px;
-      }
-      .ctrlplay-logo-wrap img {
-        height: 36px;
-        width: auto;
-        display: block;
-      }
+    /* ── TOPBAR ── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0;
+    }
+    .ctrlplay-logo-wrap {
+      background: #fff;
+      border-radius: 10px;
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      height: 50px;
+    }
+    .ctrlplay-logo-wrap img { height: 36px; width: auto; display: block; }
 
-      .status-pill {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        border: 1px solid var(--border);
-        background: var(--orange-dim);
-        padding: 7px 16px;
-        border-radius: 6px;
-        font-family: var(--mono);
-        font-size: 12px;
-        color: var(--orange);
-        letter-spacing: 1px;
-      }
-      .status-dot {
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        background: var(--orange);
-        animation: pulse 2s ease-in-out infinite;
-      }
-      @keyframes pulse {
-        0%,
-        100% {
-          opacity: 1;
-          transform: scale(1);
-        }
-        50% {
-          opacity: 0.4;
-          transform: scale(0.8);
-        }
-      }
+    .status-pill {
+      display: flex; align-items: center; gap: 8px;
+      border: 1px solid var(--border);
+      background: var(--orange-dim);
+      padding: 7px 16px; border-radius: 6px;
+      font-family: var(--mono); font-size: 12px;
+      color: var(--orange); letter-spacing: 1px;
+    }
+    .status-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--orange);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
 
-      /* ── CENTRO ── */
-      .center {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 60px;
-      }
+    /* ── CENTRO ── */
+    .center {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 48px;
+    }
 
-      /* ── LEFT: curso ── */
-      .course-block {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        flex: 1;
-        max-width: 680px;
-      }
+    /* ── LEFT: curso ── */
+    .course-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      flex: 1;
+      max-width: 680px;
+    }
 
-      .day-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        background: var(--orange-dim);
-        border: 1px solid var(--border);
-        border-radius: 4px;
-        padding: 6px 16px;
-        font-family: var(--mono);
-        font-size: 11px;
-        font-weight: 700;
-        color: var(--orange);
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        margin-bottom: 24px;
-      }
-      .day-badge svg {
-        width: 13px;
-        height: 13px;
-      }
+    .day-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--orange-dim);
+      border: 1px solid var(--border);
+      border-radius: 4px; padding: 6px 16px;
+      font-family: var(--mono); font-size: 11px; font-weight: 700;
+      color: var(--orange); letter-spacing: 2px; text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .day-badge svg { width: 13px; height: 13px; }
 
-      .main-title {
-        font-family: var(--display);
-        font-size: clamp(48px, 6.5vw, 90px);
-        font-weight: 800;
-        line-height: 1;
-        letter-spacing: -2px;
-        color: #fff;
-        margin-bottom: 6px;
-      }
-      .main-title .accent {
-        color: var(--orange);
-      }
+    .main-title {
+      font-family: var(--display);
+      font-size: clamp(44px, 6vw, 84px);
+      font-weight: 800; line-height: 1;
+      letter-spacing: -2px; color: #fff;
+      margin-bottom: 6px;
+    }
+    .main-title .accent { color: var(--orange); }
 
-      .sub-title {
-        font-family: var(--display);
-        font-size: clamp(16px, 2.2vw, 28px);
-        font-weight: 700;
-        color: var(--muted);
-        letter-spacing: -0.5px;
-        margin-bottom: 32px;
-      }
+    .sub-title {
+      font-family: var(--display);
+      font-size: clamp(15px, 2vw, 26px);
+      font-weight: 700; color: var(--muted);
+      letter-spacing: -.5px; margin-bottom: 24px;
+    }
 
-      .divider-line {
-        width: 56px;
-        height: 2px;
-        background: var(--orange);
-        border-radius: 2px;
-        margin: 0 auto 32px;
-        box-shadow: 0 0 10px var(--orange-glow);
-      }
+    .divider-line {
+      width: 56px; height: 2px;
+      background: var(--orange); border-radius: 2px;
+      margin: 0 auto 24px;
+      box-shadow: 0 0 10px var(--orange-glow);
+    }
 
-      .course-info {
-        display: flex;
-        align-items: center;
-        gap: 36px;
-      }
-      .info-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 5px;
-      }
-      .info-label {
-        font-family: var(--mono);
-        font-size: 10px;
-        color: var(--muted);
-        letter-spacing: 2px;
-        text-transform: uppercase;
-      }
-      .info-value {
-        font-family: var(--display);
-        font-size: 17px;
-        font-weight: 700;
-        color: #fff;
-      }
-      .info-sep {
-        width: 1px;
-        height: 36px;
-        background: rgba(255, 255, 255, 0.07);
-      }
+    .course-info { display: flex; align-items: center; gap: 32px; }
+    .info-item { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .info-label { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
+    .info-value { font-family: var(--display); font-size: 16px; font-weight: 700; color: #fff; }
+    .info-sep { width: 1px; height: 36px; background: rgba(255,255,255,0.07); }
 
-      .terminal-strip {
-        background: rgba(15, 18, 24, 0.85);
-        border: 1px solid rgba(255, 255, 255, 0.06);
-        border-radius: 8px;
-        padding: 12px 18px;
-        font-family: var(--mono);
-        font-size: 12px;
-        color: var(--muted);
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-top: 36px;
-        width: 100%;
-      }
-      .terminal-prompt {
-        color: var(--orange);
-      }
-      .terminal-text {
-        color: #fff;
-      }
-      .terminal-cursor {
-        display: inline-block;
-        width: 8px;
-        height: 15px;
-        background: var(--orange);
-        vertical-align: middle;
-        animation: blink 1s step-end infinite;
-        margin-left: 2px;
-      }
-      @keyframes blink {
-        0%,
-        100% {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0;
-        }
-      }
+    .terminal-strip {
+      background: rgba(15,18,24,0.85);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px; padding: 11px 18px;
+      font-family: var(--mono); font-size: 12px;
+      color: var(--muted);
+      display: flex; align-items: center; gap: 10px;
+      margin-top: 24px; width: 100%;
+    }
+    .terminal-prompt { color: var(--orange); }
+    .terminal-text { color: #fff; }
+    .terminal-cursor {
+      display: inline-block; width: 8px; height: 15px;
+      background: var(--orange); vertical-align: middle;
+      animation: blink 1s step-end infinite; margin-left: 2px;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
-      /* ── SEPARADOR VERTICAL ── */
-      .v-sep {
-        width: 1px;
-        height: 320px;
-        background: linear-gradient(
-          to bottom,
-          transparent,
-          rgba(242, 101, 34, 0.25),
-          transparent
-        );
-        flex-shrink: 0;
-      }
+    /* ── SEPARADOR VERTICAL ── */
+    .v-sep {
+      width: 1px; height: 280px;
+      background: linear-gradient(to bottom, transparent, rgba(242,101,34,0.25), transparent);
+      flex-shrink: 0;
+    }
 
-      /* ── RIGHT: convidados ── */
-      .guest-block {
-        width: 300px;
-        flex-shrink: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-      }
+    /* ── RIGHT: convidados ── */
+    .guest-block {
+      width: 300px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
 
-      .guest-header {
-        font-family: var(--mono);
-        font-size: 10px;
-        font-weight: 700;
-        color: var(--orange);
-        letter-spacing: 2.5px;
-        text-transform: uppercase;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 4px;
-      }
-      .guest-header::before {
-        content: "";
-        display: block;
-        width: 20px;
-        height: 1px;
-        background: var(--orange);
-      }
+    .guest-header {
+      font-family: var(--mono);
+      font-size: 10px; font-weight: 700;
+      color: var(--orange); letter-spacing: 2.5px;
+      text-transform: uppercase;
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 2px;
+    }
+    .guest-header::before {
+      content: ''; display: block;
+      width: 20px; height: 1px;
+      background: var(--orange);
+    }
 
-      .guest-card {
-        background: rgba(15, 18, 24, 0.7);
-        border: 1px solid rgba(255, 255, 255, 0.07);
-        border-radius: 12px;
-        padding: 18px;
-        display: flex;
-        align-items: flex-start;
-        gap: 14px;
-        transition: border-color 0.3s;
-      }
-      .guest-card:hover {
-        border-color: rgba(242, 101, 34, 0.3);
-      }
+    .guest-card {
+      background: rgba(15,18,24,0.7);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      transition: border-color 0.3s;
+    }
+    .guest-card:hover { border-color: rgba(242,101,34,0.3); }
 
-      .guest-avatar {
-        width: 56px;
-        height: 56px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid var(--orange);
-        flex-shrink: 0;
-      }
-      .guest-avatar-fallback {
-        width: 56px;
-        height: 56px;
-        border-radius: 50%;
-        border: 2px solid var(--teal);
-        background: var(--teal-dim);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        font-family: var(--display);
-        font-size: 22px;
-        font-weight: 800;
-        color: var(--teal);
-      }
+    .guest-avatar {
+      width: 52px; height: 52px;
+      border-radius: 50%; object-fit: cover;
+      border: 2px solid var(--orange); flex-shrink: 0;
+    }
+    .guest-avatar-fallback {
+      width: 52px; height: 52px;
+      border-radius: 50%; border: 2px solid var(--teal);
+      background: var(--teal-dim);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-family: var(--display); font-size: 20px; font-weight: 800;
+      color: var(--teal);
+    }
 
-      .guest-info {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-      }
-      .guest-name {
-        font-family: var(--display);
-        font-size: 16px;
-        font-weight: 800;
-        color: #fff;
-        line-height: 1.1;
-      }
-      .guest-handle {
-        font-family: var(--mono);
-        font-size: 11px;
-        color: var(--orange);
-        letter-spacing: 0.5px;
-      }
-      .guest-handle.teal {
-        color: var(--teal);
-      }
-      .guest-tag {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 4px;
-        padding: 3px 8px;
-        font-family: var(--mono);
-        font-size: 10px;
-        color: var(--muted);
-        margin-top: 4px;
-      }
-      .guest-tag svg {
-        width: 10px;
-        height: 10px;
-      }
+    .guest-info { display: flex; flex-direction: column; gap: 4px; }
+    .guest-name {
+      font-family: var(--display);
+      font-size: 15px; font-weight: 800;
+      color: #fff; line-height: 1.1;
+    }
+    .guest-handle {
+      font-family: var(--mono);
+      font-size: 11px; color: var(--orange);
+      letter-spacing: 0.5px;
+    }
+    .guest-handle a {
+      color: inherit; text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .guest-handle a:hover { opacity: 0.75; text-decoration: underline; }
+    .guest-handle.teal { color: var(--teal); }
+    .guest-handle.teal a { color: var(--teal); }
 
-      .guest-divider {
-        height: 1px;
-        background: linear-gradient(
-          to right,
-          transparent,
-          rgba(255, 255, 255, 0.07),
-          transparent
-        );
-      }
+    .guest-tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 4px; padding: 3px 8px;
+      font-family: var(--mono); font-size: 10px;
+      color: var(--muted); margin-top: 2px;
+    }
+    .guest-tag svg { width: 10px; height: 10px; }
 
-      /* ── RODAPÉ ── */
-      .footer {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-      .footer-left {
-        font-family: var(--mono);
-        font-size: 11px;
-        color: var(--muted);
-        letter-spacing: 1px;
-      }
-      .clock {
-        font-family: var(--mono);
-        font-size: 26px;
-        font-weight: 700;
-        color: #fff;
-        letter-spacing: 2px;
-        text-align: right;
-      }
-      .clock-date {
-        font-family: var(--mono);
-        font-size: 10px;
-        color: var(--muted);
-        text-align: right;
-        letter-spacing: 1px;
-        margin-top: 3px;
-      }
-    </style>
-  </head>
-  <body>
-    <canvas id="bg-canvas"></canvas>
-    <div class="scanline"></div>
-    <div class="vignette"></div>
+    .guest-divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.07), transparent);
+    }
 
-    <div class="corner corner--tl"></div>
-    <div class="corner corner--tr"></div>
-    <div class="corner corner--bl"></div>
-    <div class="corner corner--br"></div>
+    /* ── QUICK ACCESS ── */
+    .quick-access {
+      display: flex;
+      align-items: center;
+      background: rgba(15,18,24,0.7);
+      border: 1px solid rgba(242,101,34,0.14);
+      border-radius: 12px;
+      padding: 14px 24px;
+      margin-bottom: 16px;
+      gap: 0;
+    }
 
-    <div class="screen">
-      <!-- TOPBAR -->
-      <div class="topbar">
-        <div class="ctrlplay-logo-wrap">
+    .qa-section {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex: 1;
+    }
+
+    .qa-section-label {
+      font-family: var(--mono);
+      font-size: 9px; font-weight: 700;
+      color: var(--orange); letter-spacing: 2px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      writing-mode: vertical-lr;
+      transform: rotate(180deg);
+      margin-right: 4px;
+    }
+
+    .qr-wrap {
+      background: #fff;
+      border-radius: 6px;
+      padding: 4px;
+      width: 84px; height: 84px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .qr-wrap canvas, .qr-wrap img { display: block; }
+
+    .qa-info { display: flex; flex-direction: column; gap: 8px; }
+    .qa-title {
+      font-family: var(--mono);
+      font-size: 10px; font-weight: 700;
+      color: var(--orange); letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+    .qa-desc {
+      font-family: var(--mono);
+      font-size: 10px; color: var(--muted);
+      line-height: 1.5; max-width: 200px;
+    }
+    .qa-btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: var(--orange-dim);
+      border: 1px solid var(--border);
+      border-radius: 6px; padding: 7px 14px;
+      font-family: var(--mono); font-size: 11px;
+      color: var(--orange); text-decoration: none;
+      letter-spacing: 0.5px;
+      transition: background 0.2s, border-color 0.2s;
+      cursor: pointer;
+    }
+    .qa-btn:hover { background: rgba(242,101,34,0.22); border-color: var(--orange); }
+    .qa-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+    .qa-sep {
+      width: 1px; height: 72px;
+      background: rgba(255,255,255,0.07);
+      margin: 0 28px; flex-shrink: 0;
+    }
+
+    .tool-links { display: flex; flex-direction: column; gap: 8px; }
+    .tool-link {
+      display: flex; align-items: center; gap: 9px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 6px; padding: 8px 14px;
+      font-family: var(--mono); font-size: 11px;
+      color: var(--text); text-decoration: none;
+      letter-spacing: 0.3px;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      white-space: nowrap;
+    }
+    .tool-link:hover {
+      border-color: var(--orange);
+      color: var(--orange);
+      background: var(--orange-dim);
+    }
+    .tool-link svg { width: 13px; height: 13px; color: var(--muted); flex-shrink: 0; }
+    .tool-link:hover svg { color: var(--orange); }
+
+    .tool-badge {
+      font-size: 9px; padding: 2px 6px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 3px; color: var(--muted);
+      margin-left: auto;
+    }
+
+    /* ── RODAPÉ ── */
+    .footer {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-left {
+      font-family: var(--mono); font-size: 11px;
+      color: var(--muted); letter-spacing: 1px;
+    }
+    .clock {
+      font-family: var(--mono); font-size: 26px;
+      font-weight: 700; color: #fff; letter-spacing: 2px; text-align: right;
+    }
+    .clock-date {
+      font-family: var(--mono); font-size: 10px;
+      color: var(--muted); text-align: right;
+      letter-spacing: 1px; margin-top: 3px;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="bg-canvas"></canvas>
+  <div class="scanline"></div>
+  <div class="vignette"></div>
+
+  <div class="corner corner--tl"></div>
+  <div class="corner corner--tr"></div>
+  <div class="corner corner--bl"></div>
+  <div class="corner corner--br"></div>
+
+  <div class="screen">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="ctrlplay-logo-wrap">
+        <img
+          src="https://static.wikia.nocookie.net/logopedia/images/e/e5/Ctrl_Play_2024.svg/revision/latest?cb=20241102210632"
+          alt="Ctrl+Play"
+          onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block'"
+        />
+        <span id="logo-fallback" style="display:none; font-family:'Syne',sans-serif; font-size:20px; font-weight:800; color:#F26522;">Ctrl+<span style="color:#1A7A9A;">Play</span></span>
+      </div>
+      <div class="status-pill">
+        <div class="status-dot"></div>
+        SESSÃO ATIVA
+      </div>
+    </div>
+
+    <!-- CENTRO -->
+    <div class="center">
+
+      <!-- BLOCO CURSO -->
+      <div class="course-block">
+        <div class="day-badge">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          Curso de Férias &nbsp;·&nbsp; Dia 01 de 05
+        </div>
+
+        <div class="main-title">
+          Ethical<br/><span class="accent">Hacking</span>
+        </div>
+        <div class="sub-title">Introdução ao Hacking Ético</div>
+        <div class="divider-line"></div>
+
+        <div class="course-info">
+          <div class="info-item">
+            <span class="info-label">Duração</span>
+            <span class="info-value">5 Dias · 20h</span>
+          </div>
+          <div class="info-sep"></div>
+          <div class="info-item">
+            <span class="info-label">Modalidade</span>
+            <span class="info-value">Presencial</span>
+          </div>
+          <div class="info-sep"></div>
+          <div class="info-item">
+            <span class="info-label">Instrutor</span>
+            <span class="info-value">Douglas</span>
+          </div>
+          <div class="info-sep"></div>
+          <div class="info-item">
+            <span class="info-label">Horário</span>
+            <span class="info-value">14h — 17h</span>
+          </div>
+        </div>
+
+        <div class="terminal-strip">
+          <span class="terminal-prompt">root@ctrlplay:~$</span>
+          <span class="terminal-text" id="typed-text"></span>
+          <span class="terminal-cursor"></span>
+        </div>
+      </div>
+
+      <!-- SEPARADOR -->
+      <div class="v-sep"></div>
+
+      <!-- BLOCO CONVIDADOS -->
+      <div class="guest-block">
+        <div class="guest-header">Convidados de Hoje</div>
+
+        <!-- Café com Cyber -->
+        <div class="guest-card">
           <img
-            src="https://static.wikia.nocookie.net/logopedia/images/e/e5/Ctrl_Play_2024.svg/revision/latest?cb=20241102210632"
-            alt="Ctrl+Play"
-            onerror="
-              this.style.display = 'none';
-              document.getElementById('logo-fallback').style.display = 'block';
-            "
+            class="guest-avatar"
+            src="https://instagram.fgyn22-1.fna.fbcdn.net/v/t51.82787-19/724242736_17885451489578396_8161996331926856737_n.jpg?efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby40MzcuYzIifQ&_nc_ht=instagram.fgyn22-1.fna.fbcdn.net&_nc_cat=108&_nc_oc=Q6cZ2gEq96e9Vbh31MroPTgyWzKiZ1N5SjSbR0CKrpmPfhCn99XV1wV8P7udPDmluiPkaMg&_nc_ohc=27i0k1FCmccQ7kNvwEtsatR&_nc_gid=O-H60h7uHWDOqEGrUaJNfQ&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_AQCPFWWgTWGsLY2hAOZm7_fzJb_V1hMa9iMQKta_kTkFeA&oe=6A51ABD1&_nc_sid=7a9f4b"
+            alt="Café com Cyber"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
           />
-          <span
-            id="logo-fallback"
-            style="
-              display: none;
-              font-family: &quot;Syne&quot;, sans-serif;
-              font-size: 20px;
-              font-weight: 800;
-              color: #f26522;
-            "
-            >Ctrl+<span style="color: #1a7a9a">Play</span></span
-          >
-        </div>
-        <div class="status-pill">
-          <div class="status-dot"></div>
-          SESSÃO ATIVA
-        </div>
-      </div>
-
-      <!-- CENTRO -->
-      <div class="center">
-        <!-- BLOCO CURSO -->
-        <div class="course-block">
-          <div class="day-badge">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-            </svg>
-            Curso de Férias &nbsp;·&nbsp; Dia 01 de 05
-          </div>
-
-          <div class="main-title">
-            Ethical<br /><span class="accent">Hacking</span>
-          </div>
-          <div class="sub-title">Introdução ao Hacking Ético</div>
-          <div class="divider-line"></div>
-
-          <div class="course-info">
-            <div class="info-item">
-              <span class="info-label">Duração</span>
-              <span class="info-value">5 Dias · 20h</span>
+          <div class="guest-avatar-fallback" style="display:none;">☕</div>
+          <div class="guest-info">
+            <div class="guest-name">Café com Cyber</div>
+            <div class="guest-handle">
+              <a href="https://www.instagram.com/cafecomcyber_/" target="_blank">@cafecomcyber_</a>
             </div>
-            <div class="info-sep"></div>
-            <div class="info-item">
-              <span class="info-label">Modalidade</span>
-              <span class="info-value">Presencial</span>
-            </div>
-            <div class="info-sep"></div>
-            <div class="info-item">
-              <span class="info-label">Instrutor</span>
-              <span class="info-value">Douglas</span>
-            </div>
-            <div class="info-sep"></div>
-            <div class="info-item">
-              <span class="info-label">Horário</span>
-              <span class="info-value">14h — 17h</span>
-            </div>
-          </div>
-
-          <div class="terminal-strip">
-            <span class="terminal-prompt">root@ctrlplay:~$</span>
-            <span class="terminal-text" id="typed-text"></span>
-            <span class="terminal-cursor"></span>
-          </div>
-        </div>
-
-        <!-- SEPARADOR -->
-        <div class="v-sep"></div>
-
-        <!-- BLOCO CONVIDADOS -->
-        <div class="guest-block">
-          <div class="guest-header">Convidados de Hoje</div>
-
-          <!-- Café com Cyber -->
-          <div class="guest-card">
-            <img
-              class="guest-avatar"
-              src="https://instagram.fgyn22-1.fna.fbcdn.net/v/t51.82787-19/724242736_17885451489578396_8161996331926856737_n.jpg?efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby40MzcuYzIifQ&_nc_ht=instagram.fgyn22-1.fna.fbcdn.net&_nc_cat=108&_nc_oc=Q6cZ2gEq96e9Vbh31MroPTgyWzKiZ1N5SjSbR0CKrpmPfhCn99XV1wV8P7udPDmluiPkaMg&_nc_ohc=27i0k1FCmccQ7kNvwEtsatR&_nc_gid=O-H60h7uHWDOqEGrUaJNfQ&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_AQCPFWWgTWGsLY2hAOZm7_fzJb_V1hMa9iMQKta_kTkFeA&oe=6A51ABD1&_nc_sid=7a9f4b"
-              alt="Café com Cyber"
-              onerror="
-                this.style.display = 'none';
-                this.nextElementSibling.style.display = 'flex';
-              "
-            />
-            <div class="guest-avatar-fallback" style="display: none">☕</div>
-            <div class="guest-info">
-              <div class="guest-name">Café com Cyber</div>
-              <div class="guest-handle">@cafecomcyber_</div>
-              <div class="guest-tag">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-                  <circle cx="9" cy="7" r="4" />
-                  <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
-                </svg>
-                Palestra especial
-              </div>
-            </div>
-          </div>
-
-          <div class="guest-divider"></div>
-
-          <!-- Merlin -->
-          <div class="guest-card">
-            <div
-              class="guest-avatar-fallback"
-              style="
-                border-color: var(--orange);
-                color: var(--orange);
-                background: var(--orange-dim);
-              "
-            >
-              M
-            </div>
-            <div class="guest-info">
-              <div class="guest-name">Merlin</div>
-              <div class="guest-handle">@cyber.merlin</div>
-              <div class="guest-tag">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <rect x="2" y="3" width="20" height="14" rx="2" />
-                  <path d="M8 21h8M12 17v4" />
-                </svg>
-                Demonstração de equipamentos
-              </div>
+            <div class="guest-tag">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+              </svg>
+              Palestra especial
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- RODAPÉ -->
-      <div class="footer">
-        <div class="footer-left">
-          CTRL+PLAY GOIÂNIA &nbsp;·&nbsp; ETHICAL HACKING BOOTCAMP 2026
-        </div>
-        <div>
-          <div class="clock" id="clock">00:00:00</div>
-          <div class="clock-date" id="clock-date"></div>
+        <div class="guest-divider"></div>
+
+        <!-- Merlin -->
+        <div class="guest-card">
+          <div class="guest-avatar-fallback" style="border-color:var(--orange); color:var(--orange); background:var(--orange-dim);">M</div>
+          <div class="guest-info">
+            <div class="guest-name">Merlin</div>
+            <div class="guest-handle teal">
+              <a href="https://www.instagram.com/cyber.merlin/" target="_blank">@cyber.merlin</a>
+            </div>
+            <div class="guest-tag">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
+              </svg>
+              Demonstração de equipamentos
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <script>
-      // RELÓGIO
-      function updateClock() {
-        const now = new Date();
-        const pad = (n) => String(n).padStart(2, "0");
-        document.getElementById("clock").textContent =
-          `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-        const days = [
-          "Domingo",
-          "Segunda-feira",
-          "Terça-feira",
-          "Quarta-feira",
-          "Quinta-feira",
-          "Sexta-feira",
-          "Sábado",
-        ];
-        const months = [
-          "Jan",
-          "Fev",
-          "Mar",
-          "Abr",
-          "Mai",
-          "Jun",
-          "Jul",
-          "Ago",
-          "Set",
-          "Out",
-          "Nov",
-          "Dez",
-        ];
-        document.getElementById("clock-date").textContent =
-          `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
-      }
-      updateClock();
-      setInterval(updateClock, 1000);
+    <!-- QUICK ACCESS -->
+    <div class="quick-access">
 
-      // TYPING
-      const messages = [
-        "inicializando ambiente de laboratório...",
-        "carregando ferramentas: nmap, wireshark, burp...",
-        "convidados confirmados — café com cyber & merlin.",
-        "bem-vindo ao curso de ethical hacking.",
-      ];
-      let msgIdx = 0,
-        charIdx = 0,
-        deleting = false;
-      const el = document.getElementById("typed-text");
-      function type() {
-        const msg = messages[msgIdx];
-        if (!deleting) {
-          el.textContent = msg.slice(0, ++charIdx);
-          if (charIdx === msg.length) {
-            deleting = true;
-            setTimeout(type, 2400);
-            return;
-          }
-          setTimeout(type, 40);
-        } else {
-          el.textContent = msg.slice(0, --charIdx);
-          if (charIdx === 0) {
-            deleting = false;
-            msgIdx = (msgIdx + 1) % messages.length;
-            setTimeout(type, 400);
-            return;
-          }
-          setTimeout(type, 16);
-        }
-      }
-      setTimeout(type, 800);
+      <!-- Material das Aulas -->
+      <div class="qa-section">
+        <div class="qr-wrap">
+          <div id="qr-material"></div>
+        </div>
+        <div class="qa-info">
+          <div class="qa-title">Material das Aulas</div>
+          <div class="qa-desc">Apostilas, exercícios e referências do curso disponíveis no Google Drive.</div>
+          <a href="https://drive.google.com/drive/folders/1knojnPqqrRWT50rZDB7pP3iqrjd3I44u?usp=sharing" target="_blank" class="qa-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
+            </svg>
+            Acessar no Drive
+          </a>
+        </div>
+      </div>
 
-      // CANVAS
-      const canvas = document.getElementById("bg-canvas");
-      const ctx = canvas.getContext("2d");
-      let W,
-        H,
-        dots = [];
-      function resize() {
-        W = canvas.width = window.innerWidth;
-        H = canvas.height = window.innerHeight;
-        dots = [];
-        const count = Math.floor((W * H) / 14000);
-        for (let i = 0; i < count; i++) {
-          dots.push({
-            x: Math.random() * W,
-            y: Math.random() * H,
-            vx: (Math.random() - 0.5) * 0.22,
-            vy: (Math.random() - 0.5) * 0.22,
-            r: Math.random() * 1.4 + 0.4,
-          });
+      <div class="qa-sep"></div>
+
+      <!-- Downloads -->
+      <div class="qa-section">
+        <div class="qa-info">
+          <div class="qa-title">Download das Ferramentas</div>
+          <div class="tool-links">
+            <a href="https://www.kali.org/get-kali/#kali-virtual-machines" target="_blank" class="tool-link">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Kali Linux
+              <span class="tool-badge">VirtualBox .7z</span>
+            </a>
+            <a href="https://sourceforge.net/projects/metasploitable/" target="_blank" class="tool-link">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Metasploitable2
+              <span class="tool-badge">SourceForge .zip</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RODAPÉ -->
+    <div class="footer">
+      <div class="footer-left">
+        CTRL+PLAY GOIÂNIA &nbsp;·&nbsp; ETHICAL HACKING BOOTCAMP 2026
+      </div>
+      <div>
+        <div class="clock" id="clock">00:00:00</div>
+        <div class="clock-date" id="clock-date"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // RELÓGIO
+    function updateClock() {
+      const now = new Date();
+      const pad = n => String(n).padStart(2,'0');
+      document.getElementById('clock').textContent =
+        `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+      const days = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+      const months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+      document.getElementById('clock-date').textContent =
+        `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // QR CODE
+    window.addEventListener('load', function() {
+      new QRCode(document.getElementById('qr-material'), {
+        text: 'https://drive.google.com/drive/folders/1knojnPqqrRWT50rZDB7pP3iqrjd3I44u?usp=sharing',
+        width: 76,
+        height: 76,
+        colorDark: '#1a1a1a',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    });
+
+    // TYPING
+    const messages = [
+      'inicializando ambiente de laboratório...',
+      'carregando ferramentas: nmap, wireshark, burp...',
+      'convidados confirmados — café com cyber & merlin.',
+      'material disponível no google drive — escaneie o qr.',
+      'bem-vindo ao curso de ethical hacking.',
+    ];
+    let msgIdx = 0, charIdx = 0, deleting = false;
+    const el = document.getElementById('typed-text');
+    function type() {
+      const msg = messages[msgIdx];
+      if (!deleting) {
+        el.textContent = msg.slice(0, ++charIdx);
+        if (charIdx === msg.length) { deleting = true; setTimeout(type, 2400); return; }
+        setTimeout(type, 40);
+      } else {
+        el.textContent = msg.slice(0, --charIdx);
+        if (charIdx === 0) {
+          deleting = false;
+          msgIdx = (msgIdx + 1) % messages.length;
+          setTimeout(type, 400);
+          return;
         }
+        setTimeout(type, 16);
       }
-      function draw() {
-        ctx.clearRect(0, 0, W, H);
-        const MAX = 140;
-        for (let d of dots) {
-          d.x += d.vx;
-          d.y += d.vy;
-          if (d.x < 0 || d.x > W) d.vx *= -1;
-          if (d.y < 0 || d.y > H) d.vy *= -1;
-          ctx.beginPath();
-          ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
-          ctx.fillStyle = "rgba(242,101,34,0.22)";
-          ctx.fill();
-        }
-        for (let i = 0; i < dots.length; i++) {
-          for (let j = i + 1; j < dots.length; j++) {
-            const dx = dots[i].x - dots[j].x,
-              dy = dots[i].y - dots[j].y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < MAX) {
-              ctx.beginPath();
-              ctx.moveTo(dots[i].x, dots[i].y);
-              ctx.lineTo(dots[j].x, dots[j].y);
-              ctx.strokeStyle = `rgba(242,101,34,${(1 - dist / MAX) * 0.1})`;
-              ctx.lineWidth = 0.7;
-              ctx.stroke();
-            }
+    }
+    setTimeout(type, 800);
+
+    // CANVAS
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, dots = [];
+    function resize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+      dots = [];
+      const count = Math.floor((W * H) / 14000);
+      for (let i = 0; i < count; i++) {
+        dots.push({ x: Math.random()*W, y: Math.random()*H,
+          vx: (Math.random()-.5)*.22, vy: (Math.random()-.5)*.22,
+          r: Math.random()*1.4+.4 });
+      }
+    }
+    function draw() {
+      ctx.clearRect(0,0,W,H);
+      const MAX = 140;
+      for (let d of dots) {
+        d.x += d.vx; d.y += d.vy;
+        if (d.x < 0 || d.x > W) d.vx *= -1;
+        if (d.y < 0 || d.y > H) d.vy *= -1;
+        ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI*2);
+        ctx.fillStyle = 'rgba(242,101,34,0.22)'; ctx.fill();
+      }
+      for (let i = 0; i < dots.length; i++) {
+        for (let j = i+1; j < dots.length; j++) {
+          const dx = dots[i].x-dots[j].x, dy = dots[i].y-dots[j].y;
+          const dist = Math.sqrt(dx*dx+dy*dy);
+          if (dist < MAX) {
+            ctx.beginPath();
+            ctx.moveTo(dots[i].x, dots[i].y);
+            ctx.lineTo(dots[j].x, dots[j].y);
+            ctx.strokeStyle = `rgba(242,101,34,${(1-dist/MAX)*0.1})`;
+            ctx.lineWidth = 0.7; ctx.stroke();
           }
         }
-        requestAnimationFrame(draw);
       }
-      resize();
-      draw();
-      window.addEventListener("resize", resize);
-    </script>
-  </body>
+      requestAnimationFrame(draw);
+    }
+    resize(); draw();
+    window.addEventListener('resize', resize);
+  </script>
+</body>
 </html>

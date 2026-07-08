@@ -69,28 +69,27 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 0;
     }
     .ctrlplay-logo-wrap {
       background: #fff;
       border-radius: 10px;
-      padding: 6px 14px;
+      padding: 6px 16px;
       display: flex;
       align-items: center;
-      height: 50px;
+      height: 58px;
     }
-    .ctrlplay-logo-wrap img { height: 36px; width: auto; display: block; }
+    .ctrlplay-logo-wrap img { height: 42px; width: auto; display: block; }
 
     .status-pill {
-      display: flex; align-items: center; gap: 8px;
+      display: flex; align-items: center; gap: 10px;
       border: 1px solid var(--border);
       background: var(--orange-dim);
-      padding: 7px 16px; border-radius: 6px;
-      font-family: var(--mono); font-size: 12px;
-      color: var(--orange); letter-spacing: 1px;
+      padding: 10px 20px; border-radius: 6px;
+      font-family: var(--mono); font-size: 15px;
+      color: var(--orange); letter-spacing: 2px;
     }
     .status-dot {
-      width: 7px; height: 7px; border-radius: 50%;
+      width: 9px; height: 9px; border-radius: 50%;
       background: var(--orange);
       animation: pulse 2s ease-in-out infinite;
     }
@@ -111,62 +110,67 @@
       align-items: center;
       text-align: center;
       flex: 1;
-      max-width: 680px;
+      max-width: 700px;
     }
 
     .day-badge {
-      display: inline-flex; align-items: center; gap: 8px;
+      display: inline-flex; align-items: center; gap: 10px;
       background: var(--orange-dim);
       border: 1px solid var(--border);
-      border-radius: 4px; padding: 6px 16px;
-      font-family: var(--mono); font-size: 11px; font-weight: 700;
-      color: var(--orange); letter-spacing: 2px; text-transform: uppercase;
+      border-radius: 4px; padding: 8px 20px;
+      font-family: var(--mono); font-size: 14px; font-weight: 700;
+      color: var(--orange); letter-spacing: 3px; text-transform: uppercase;
       margin-bottom: 20px;
     }
-    .day-badge svg { width: 13px; height: 13px; }
+    .day-badge svg { width: 16px; height: 16px; }
 
     .main-title {
       font-family: var(--display);
-      font-size: clamp(44px, 6vw, 84px);
+      font-size: clamp(56px, 7vw, 100px);
       font-weight: 800; line-height: 1;
       letter-spacing: -2px; color: #fff;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
     .main-title .accent { color: var(--orange); }
 
     .sub-title {
       font-family: var(--display);
-      font-size: clamp(15px, 2vw, 26px);
+      font-size: clamp(18px, 2.2vw, 30px);
       font-weight: 700; color: var(--muted);
       letter-spacing: -.5px; margin-bottom: 24px;
     }
 
     .divider-line {
-      width: 56px; height: 2px;
+      width: 64px; height: 3px;
       background: var(--orange); border-radius: 2px;
       margin: 0 auto 24px;
-      box-shadow: 0 0 10px var(--orange-glow);
+      box-shadow: 0 0 12px var(--orange-glow);
     }
 
-    .course-info { display: flex; align-items: center; gap: 32px; }
-    .info-item { display: flex; flex-direction: column; align-items: center; gap: 5px; }
-    .info-label { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
-    .info-value { font-family: var(--display); font-size: 16px; font-weight: 700; color: #fff; }
-    .info-sep { width: 1px; height: 36px; background: rgba(255,255,255,0.07); }
+    .course-info { display: flex; align-items: center; gap: 36px; }
+    .info-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .info-label {
+      font-family: var(--mono); font-size: 13px;
+      color: var(--muted); letter-spacing: 2px; text-transform: uppercase;
+    }
+    .info-value {
+      font-family: var(--display); font-size: 20px; font-weight: 700; color: #fff;
+    }
+    .info-sep { width: 1px; height: 40px; background: rgba(255,255,255,0.07); }
 
     .terminal-strip {
       background: rgba(15,18,24,0.85);
       border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 8px; padding: 11px 18px;
-      font-family: var(--mono); font-size: 12px;
+      border-radius: 8px; padding: 14px 20px;
+      font-family: var(--mono); font-size: 15px;
       color: var(--muted);
-      display: flex; align-items: center; gap: 10px;
+      display: flex; align-items: center; gap: 12px;
       margin-top: 24px; width: 100%;
     }
     .terminal-prompt { color: var(--orange); }
     .terminal-text { color: #fff; }
     .terminal-cursor {
-      display: inline-block; width: 8px; height: 15px;
+      display: inline-block; width: 9px; height: 18px;
       background: var(--orange); vertical-align: middle;
       animation: blink 1s step-end infinite; margin-left: 2px;
     }
@@ -174,14 +178,14 @@
 
     /* ── SEPARADOR VERTICAL ── */
     .v-sep {
-      width: 1px; height: 280px;
+      width: 1px; height: 300px;
       background: linear-gradient(to bottom, transparent, rgba(242,101,34,0.25), transparent);
       flex-shrink: 0;
     }
 
     /* ── RIGHT: convidados ── */
     .guest-block {
-      width: 300px;
+      width: 320px;
       flex-shrink: 0;
       display: flex;
       flex-direction: column;
@@ -190,8 +194,8 @@
 
     .guest-header {
       font-family: var(--mono);
-      font-size: 10px; font-weight: 700;
-      color: var(--orange); letter-spacing: 2.5px;
+      font-size: 13px; font-weight: 700;
+      color: var(--orange); letter-spacing: 3px;
       text-transform: uppercase;
       display: flex; align-items: center; gap: 10px;
       margin-bottom: 2px;
@@ -206,38 +210,38 @@
       background: rgba(15,18,24,0.7);
       border: 1px solid rgba(255,255,255,0.07);
       border-radius: 12px;
-      padding: 16px;
+      padding: 18px;
       display: flex;
       align-items: flex-start;
-      gap: 14px;
+      gap: 16px;
       transition: border-color 0.3s;
     }
     .guest-card:hover { border-color: rgba(242,101,34,0.3); }
 
     .guest-avatar {
-      width: 52px; height: 52px;
+      width: 60px; height: 60px;
       border-radius: 50%; object-fit: cover;
       border: 2px solid var(--orange); flex-shrink: 0;
     }
     .guest-avatar-fallback {
-      width: 52px; height: 52px;
+      width: 60px; height: 60px;
       border-radius: 50%; border: 2px solid var(--teal);
       background: var(--teal-dim);
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
-      font-family: var(--display); font-size: 20px; font-weight: 800;
+      font-family: var(--display); font-size: 24px; font-weight: 800;
       color: var(--teal);
     }
 
-    .guest-info { display: flex; flex-direction: column; gap: 4px; }
+    .guest-info { display: flex; flex-direction: column; gap: 5px; }
     .guest-name {
       font-family: var(--display);
-      font-size: 15px; font-weight: 800;
+      font-size: 18px; font-weight: 800;
       color: #fff; line-height: 1.1;
     }
     .guest-handle {
       font-family: var(--mono);
-      font-size: 11px; color: var(--orange);
+      font-size: 14px; color: var(--orange);
       letter-spacing: 0.5px;
     }
     .guest-handle a {
@@ -249,14 +253,14 @@
     .guest-handle.teal a { color: var(--teal); }
 
     .guest-tag {
-      display: inline-flex; align-items: center; gap: 5px;
+      display: inline-flex; align-items: center; gap: 6px;
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 4px; padding: 3px 8px;
-      font-family: var(--mono); font-size: 10px;
+      border-radius: 4px; padding: 4px 10px;
+      font-family: var(--mono); font-size: 12px;
       color: var(--muted); margin-top: 2px;
     }
-    .guest-tag svg { width: 10px; height: 10px; }
+    .guest-tag svg { width: 12px; height: 12px; }
 
     .guest-divider {
       height: 1px;
@@ -270,7 +274,7 @@
       background: rgba(15,18,24,0.7);
       border: 1px solid rgba(242,101,34,0.14);
       border-radius: 12px;
-      padding: 14px 24px;
+      padding: 16px 28px;
       margin-bottom: 16px;
       gap: 0;
     }
@@ -278,26 +282,15 @@
     .qa-section {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 18px;
       flex: 1;
-    }
-
-    .qa-section-label {
-      font-family: var(--mono);
-      font-size: 9px; font-weight: 700;
-      color: var(--orange); letter-spacing: 2px;
-      text-transform: uppercase;
-      white-space: nowrap;
-      writing-mode: vertical-lr;
-      transform: rotate(180deg);
-      margin-right: 4px;
     }
 
     .qr-wrap {
       background: #fff;
       border-radius: 6px;
-      padding: 4px;
-      width: 84px; height: 84px;
+      padding: 5px;
+      width: 90px; height: 90px;
       flex-shrink: 0;
       display: flex;
       align-items: center;
@@ -308,42 +301,42 @@
     .qa-info { display: flex; flex-direction: column; gap: 8px; }
     .qa-title {
       font-family: var(--mono);
-      font-size: 10px; font-weight: 700;
-      color: var(--orange); letter-spacing: 1.5px;
+      font-size: 13px; font-weight: 700;
+      color: var(--orange); letter-spacing: 2px;
       text-transform: uppercase;
     }
     .qa-desc {
       font-family: var(--mono);
-      font-size: 10px; color: var(--muted);
-      line-height: 1.5; max-width: 200px;
+      font-size: 13px; color: var(--muted);
+      line-height: 1.5; max-width: 220px;
     }
     .qa-btn {
-      display: inline-flex; align-items: center; gap: 7px;
+      display: inline-flex; align-items: center; gap: 8px;
       background: var(--orange-dim);
       border: 1px solid var(--border);
-      border-radius: 6px; padding: 7px 14px;
-      font-family: var(--mono); font-size: 11px;
+      border-radius: 6px; padding: 9px 16px;
+      font-family: var(--mono); font-size: 13px;
       color: var(--orange); text-decoration: none;
       letter-spacing: 0.5px;
       transition: background 0.2s, border-color 0.2s;
       cursor: pointer;
     }
     .qa-btn:hover { background: rgba(242,101,34,0.22); border-color: var(--orange); }
-    .qa-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+    .qa-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
 
     .qa-sep {
-      width: 1px; height: 72px;
+      width: 1px; height: 80px;
       background: rgba(255,255,255,0.07);
-      margin: 0 28px; flex-shrink: 0;
+      margin: 0 32px; flex-shrink: 0;
     }
 
-    .tool-links { display: flex; flex-direction: column; gap: 8px; }
+    .tool-links { display: flex; flex-direction: column; gap: 10px; }
     .tool-link {
-      display: flex; align-items: center; gap: 9px;
+      display: flex; align-items: center; gap: 10px;
       background: rgba(255,255,255,0.03);
       border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 6px; padding: 8px 14px;
-      font-family: var(--mono); font-size: 11px;
+      border-radius: 6px; padding: 10px 16px;
+      font-family: var(--mono); font-size: 14px;
       color: var(--text); text-decoration: none;
       letter-spacing: 0.3px;
       transition: border-color 0.2s, color 0.2s, background 0.2s;
@@ -354,11 +347,11 @@
       color: var(--orange);
       background: var(--orange-dim);
     }
-    .tool-link svg { width: 13px; height: 13px; color: var(--muted); flex-shrink: 0; }
+    .tool-link svg { width: 15px; height: 15px; color: var(--muted); flex-shrink: 0; }
     .tool-link:hover svg { color: var(--orange); }
 
     .tool-badge {
-      font-size: 9px; padding: 2px 6px;
+      font-size: 11px; padding: 2px 8px;
       background: rgba(255,255,255,0.06);
       border-radius: 3px; color: var(--muted);
       margin-left: auto;
@@ -369,17 +362,17 @@
       display: flex; align-items: center; justify-content: space-between;
     }
     .footer-left {
-      font-family: var(--mono); font-size: 11px;
-      color: var(--muted); letter-spacing: 1px;
+      font-family: var(--mono); font-size: 14px;
+      color: var(--muted); letter-spacing: 2px;
     }
     .clock {
-      font-family: var(--mono); font-size: 26px;
-      font-weight: 700; color: #fff; letter-spacing: 2px; text-align: right;
+      font-family: var(--mono); font-size: 32px;
+      font-weight: 700; color: #fff; letter-spacing: 3px; text-align: right;
     }
     .clock-date {
-      font-family: var(--mono); font-size: 10px;
+      font-family: var(--mono); font-size: 13px;
       color: var(--muted); text-align: right;
-      letter-spacing: 1px; margin-top: 3px;
+      letter-spacing: 1px; margin-top: 4px;
     }
   </style>
 </head>
@@ -404,7 +397,7 @@
           alt="Ctrl+Play"
           onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block'"
         />
-        <span id="logo-fallback" style="display:none; font-family:'Syne',sans-serif; font-size:20px; font-weight:800; color:#F26522;">Ctrl+<span style="color:#1A7A9A;">Play</span></span>
+        <span id="logo-fallback" style="display:none; font-family:'Syne',sans-serif; font-size:24px; font-weight:800; color:#F26522;">Ctrl+<span style="color:#1A7A9A;">Play</span></span>
       </div>
       <div class="status-pill">
         <div class="status-dot"></div>
@@ -466,7 +459,6 @@
       <div class="guest-block">
         <div class="guest-header">Convidados de Hoje</div>
 
-        <!-- Café com Cyber -->
         <div class="guest-card">
           <img
             class="guest-avatar"
@@ -492,7 +484,6 @@
 
         <div class="guest-divider"></div>
 
-        <!-- Merlin -->
         <div class="guest-card">
           <div class="guest-avatar-fallback" style="border-color:var(--orange); color:var(--orange); background:var(--orange-dim);">M</div>
           <div class="guest-info">
@@ -513,27 +504,24 @@
 
     <!-- QUICK ACCESS -->
     <div class="quick-access">
-
-      <!-- Material das Aulas -->
       <div class="qa-section">
         <div class="qr-wrap">
           <div id="qr-material"></div>
         </div>
         <div class="qa-info">
           <div class="qa-title">Material das Aulas</div>
-          <div class="qa-desc">Apostilas, exercícios e referências do curso disponíveis no Google Drive.</div>
+          <div class="qa-desc">Apostilas e exercícios disponíveis no Google Drive. Escaneie o QR ou clique no botão.</div>
           <a href="https://drive.google.com/drive/folders/1knojnPqqrRWT50rZDB7pP3iqrjd3I44u?usp=sharing" target="_blank" class="qa-btn">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
             </svg>
-            Acessar no Drive
+            Acessar no Google Drive
           </a>
         </div>
       </div>
 
       <div class="qa-sep"></div>
 
-      <!-- Downloads -->
       <div class="qa-section">
         <div class="qa-info">
           <div class="qa-title">Download das Ferramentas</div>
@@ -555,7 +543,6 @@
           </div>
         </div>
       </div>
-
     </div>
 
     <!-- RODAPÉ -->
@@ -572,7 +559,6 @@
   </div>
 
   <script>
-    // RELÓGIO
     function updateClock() {
       const now = new Date();
       const pad = n => String(n).padStart(2,'0');
@@ -586,19 +572,15 @@
     updateClock();
     setInterval(updateClock, 1000);
 
-    // QR CODE
     window.addEventListener('load', function() {
       new QRCode(document.getElementById('qr-material'), {
         text: 'https://drive.google.com/drive/folders/1knojnPqqrRWT50rZDB7pP3iqrjd3I44u?usp=sharing',
-        width: 76,
-        height: 76,
-        colorDark: '#1a1a1a',
-        colorLight: '#ffffff',
+        width: 80, height: 80,
+        colorDark: '#1a1a1a', colorLight: '#ffffff',
         correctLevel: QRCode.CorrectLevel.M
       });
     });
 
-    // TYPING
     const messages = [
       'inicializando ambiente de laboratório...',
       'carregando ferramentas: nmap, wireshark, burp...',
@@ -627,7 +609,6 @@
     }
     setTimeout(type, 800);
 
-    // CANVAS
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
     let W, H, dots = [];
